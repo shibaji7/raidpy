@@ -25,10 +25,24 @@ def clean():
         shutil.rmtree("raid.egg-info/")
     os.system("find . -type d -name '.ipynb_checkpoints' -exec rm -rf {} +")
     os.system("find . -type d -name '__pycache__' -exec rm -rf {} +")
+    cmds = [
+        "python setup.py clean --all",
+        "rm -rf build *.egg-info",
+        "rm -rf `find -type d -name '.ipynb_checkpoints'`",
+        "rm -rf `find -type d -name '__pycache__'`",
+        "isort -rc -sl .",
+        "autoflake --in-place .",
+        "isort -rc -m 3 .",
+        "black .",
+        "pip install -e .[dev]",
+    ]
+    for cmd in cmds:
+        os.system(cmd)
     return
 
 
 def build():
+    clean()
     os.system("isort -rc -sl .")
     os.system("autoflake --remove-all-unused-imports -i -r .")
     os.system("isort -rc -m 3 .")
